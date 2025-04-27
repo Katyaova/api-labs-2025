@@ -20,35 +20,48 @@ router.get('/:id', (req, res) => {
 });
 
 // Add a new task
+// Add a new task
 router.post('/', (req, res) => {
     const { title, description, deadline, priority, done } = req.body;
+    const now = new Date().toISOString();  // Get current date-time
     const newTask = {
-      id: uuidv4(),   // Generate a random ID
+      id: uuidv4(),
       title,
       description,
       deadline,
       priority,
-      done
+      done,
+      created_at: now,
+      updated_at: now
     };
-    tasksData.tasks.push(newTask); // Add the new task to the array
-    res.status(201).json(newTask); // Return the new task
-    tasksData.total_results++;     // Update the total results counter
+    tasksData.tasks.push(newTask);
+    res.status(201).json(newTask);
+    tasksData.total_results++;
   });
+  
 
   // Update an existing task
+// Update an existing task
 router.put('/:id', (req, res) => {
     const { id } = req.params;
     const taskIndex = tasksData.tasks.findIndex(task => task.id === id);
     
     if (taskIndex === -1) {
-        return res.status(404).json({ status: 404, message: 'Task not found' });
+      return res.status(404).json({ status: 404, message: 'Task not found' });
     }
-    
-    const updatedTask = { ...tasksData.tasks[taskIndex], ...req.body, id: id };
+  
+    const now = new Date().toISOString();  // Get current date-time
+    const updatedTask = {
+      ...tasksData.tasks[taskIndex],
+      ...req.body,
+      id: id,  // Ensure ID stays the same
+      updated_at: now // Update timestamp
+    };
+  
     tasksData.tasks[taskIndex] = updatedTask;
-    
     res.json(updatedTask);
-});
+  });
+  
 
 // Delete a task
 router.delete('/:id', (req, res) => {
