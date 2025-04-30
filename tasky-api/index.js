@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 import express from 'express';
 import tasksRouter from './api/tasks/index.js';
 import usersRouter from './api/users/index.js';
+import authenticate from './authenticate';
 import './db';
 import cors from 'cors';
 
@@ -16,6 +17,8 @@ app.use(cors());
 // Parse JSON
 app.use(express.json());
 
+
+
 // eslint-disable-next-line no-unused-vars
 const errHandler = (err, req, res, next) => {
   if (process.env.NODE_ENV === 'production') {
@@ -25,7 +28,7 @@ const errHandler = (err, req, res, next) => {
 };
 
 // Routers
-app.use('/api/tasks', tasksRouter);
+app.use('/api/tasks', authenticate, tasksRouter);
 app.use('/api/users', usersRouter);
 
 // Start server
